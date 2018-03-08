@@ -87,6 +87,12 @@ else(curl_cv_recv)
 endif(curl_cv_recv)
 set(curl_cv_func_recv_args "${curl_cv_func_recv_args}" CACHE INTERNAL "Arguments for recv")
 set(HAVE_RECV 1)
+add_definitions(-DHAVE_RECV)
+add_definitions("-DRECV_TYPE_ARG1=${RECV_TYPE_ARG1}")
+add_definitions("-DRECV_TYPE_ARG2=${RECV_TYPE_ARG2}")
+add_definitions("-DRECV_TYPE_ARG3=${RECV_TYPE_ARG3}")
+add_definitions("-DRECV_TYPE_ARG4=${RECV_TYPE_ARG4}")
+add_definitions("-DRECV_TYPE_RETV=${RECV_TYPE_RETV}")
 
 check_c_source_compiles("${_source_epilogue}
 int main(void) {
@@ -155,6 +161,12 @@ else(curl_cv_send)
 endif(curl_cv_send)
 set(curl_cv_func_send_args "${curl_cv_func_send_args}" CACHE INTERNAL "Arguments for send")
 set(HAVE_SEND 1)
+add_definitions(-DHAVE_SEND)
+add_definitions("-DSEND_TYPE_ARG1=${SEND_TYPE_ARG1}")
+add_definitions("-DSEND_TYPE_ARG2=${SEND_TYPE_ARG2}")
+add_definitions("-DSEND_TYPE_ARG3=${SEND_TYPE_ARG3}")
+add_definitions("-DSEND_TYPE_ARG4=${SEND_TYPE_ARG4}")
+add_definitions("-DSEND_TYPE_RETV=${SEND_TYPE_RETV}")
 
 check_c_source_compiles("${_source_epilogue}
   int main(void) {

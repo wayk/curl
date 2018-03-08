@@ -82,7 +82,21 @@ if(ANDROID)
   set(HAVE_POSIX_STRERROR_R 0 CACHE STRING "" FORCE)
   set(HAVE_POSIX_STRERROR_R__TRYRUN_OUTPUT "" CACHE STRING "" FORCE)
   set(HAVE_POLL_FINE_EXITCODE 0 CACHE STRING "" FORCE )
+elseif(IOS)
+  list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
+  list(REMOVE_DUPLICATES CMAKE_FIND_ROOT_PATH)
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+  set(HAVE_GLIBC_STRERROR_R 0 CACHE STRING "" FORCE)
+  set(HAVE_GLIBC_STRERROR_R__TRYRUN_OUTPUT "" CACHE STRING "" FORCE)
+  set(HAVE_POSIX_STRERROR_R 1 CACHE STRING "" FORCE)
+  set(HAVE_POSIX_STRERROR_R__TRYRUN_OUTPUT "" CACHE STRING "" FORCE)
+  set(HAVE_POLL_FINE_EXITCODE 0 CACHE STRING "" FORCE )
+  add_definitions(-DHAVE_POSIX_STRERROR_R)
+  set(curl_cv_func_recv_args "int,void *,size_t,int,ssize_t" CACHE INTERNAL "Arguments for recv")
+  set(curl_cv_func_send_args "int,void *,size_t,int,ssize_t,const" CACHE INTERNAL "Arguments for send")
 endif()
+
+option(ENABLE_CURL_CONFIG "Enable curl-config executable script" ON)
 
 option(CURL_WERROR "Turn compiler warnings into errors" OFF)
 option(PICKY_COMPILER "Enable picky compiler options" ON)
@@ -214,8 +228,13 @@ if(ENABLE_IPV6 AND NOT WIN32)
   endif()
 endif()
 
+set(_CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ${CMAKE_FIND_ROOT_PATH_MODE_PROGRAM})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
 CURL_NROFF_CHECK()
 find_package(Perl)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ${_CMAKE_FIND_ROOT_PATH_MODE_PROGRAM})
 
 CMAKE_DEPENDENT_OPTION(ENABLE_MANUAL "to provide the built-in manual"
     ON "NROFF_USEFUL;PERL_FOUND"
@@ -1272,6 +1291,7 @@ set(REQUIRE_LIB_DEPS        "no")
 # SUPPORT_PROTOCOLS
 set(VERSIONNUM              "${CURL_VERSION_NUM}")
 
+if(ENABLE_CURL_CONFIG)
 # Finally generate a "curl-config" matching this config
 configure_file("${CURL_SOURCE_DIR}/curl-config.in"
                "${CURL_BINARY_DIR}/curl-config" @ONLY)
@@ -1281,6 +1301,7 @@ install(FILES "${CURL_BINARY_DIR}/curl-config"
           OWNER_READ OWNER_WRITE OWNER_EXECUTE
           GROUP_READ GROUP_EXECUTE
           WORLD_READ WORLD_EXECUTE)
+endif()
 
 # Finally generate a pkg-config file matching this config
 configure_file("${CURL_SOURCE_DIR}/libcurl.pc.in"
