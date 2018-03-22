@@ -1165,11 +1165,7 @@ function(TRANSFORM_MAKEFILE_INC INPUT_FILE OUTPUT_FILE)
 
 endfunction()
 
-if(WIN32 AND NOT CYGWIN)
-    set(CURL_INSTALL_CMAKE_DIR CMake)
-else()
-    set(CURL_INSTALL_CMAKE_DIR lib/cmake/curl)
-endif()
+set(CURL_INSTALL_CMAKE_DIR lib/cmake/curl)
 
 if(USE_MANUAL)
   add_subdirectory(docs)
