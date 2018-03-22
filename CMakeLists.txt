@@ -1165,6 +1165,10 @@ function(TRANSFORM_MAKEFILE_INC INPUT_FILE OUTPUT_FILE)
 
 endfunction()
 
+if(IOS OR ANDROID)
+  list(REMOVE_ITEM CURL_LIBS socket idn2)
+endif()
+
 set(CURL_INSTALL_CMAKE_DIR lib/cmake/curl)
 
 if(USE_MANUAL)
